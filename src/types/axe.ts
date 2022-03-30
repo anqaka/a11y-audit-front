@@ -15,10 +15,10 @@ type AxeIssue = {
 }
 
 type AxeResults = {
-  passes: AxeIssue[];
-  violations: AxeIssue[];
-  incomplete: AxeIssue[];
-  inapplicable: AxeIssue[];
+  passes: AxeIssue[]
+  violations: AxeIssue[]
+  incomplete: AxeIssue[]
+  inapplicable: AxeIssue[]
 }
 
 type ImpactValue = 'minor' | 'moderate' | 'serious' | 'critical' | null;

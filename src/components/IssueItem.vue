@@ -1,66 +1,65 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { AxeIssue } from '../types/axe'
-import Collapsible from './Collapsible.vue';
+import Collapsible from './Collapsible.vue'
+import BaseSelect from './BaseSelect.vue'
+import useStatusOptions from '../composables/use-status-options'
+
 const props = defineProps<{
   item: AxeIssue
 }>()
 const moreLabel = 'More info'
 const topLabels = {
-  id: 'issue',
+  id: 'Issue',
   testedUrl: 'Tested Url',
   tags: 'Tags',
-  impact: 'Impact',
-  status: 'Status'
+  impact: 'Impact'
 }
 
 const expandedProps = computed(() => {
   return Object.fromEntries(Object.entries(props.item).filter(([key, value]) => !topLabels.hasOwnProperty(key)))
 })
 
+const statusOptions = useStatusOptions()
+
 </script>
 <template>
   <div class="grid grid-col-1 lg:grid-cols-5 py-4">
     <div
-      class="font-bold before:content-[attr(data-before)] before:mr-1 lg:before:content-none"
-      data-before="Issue:"
-    >
-      {{ item.id }}
-    </div>
-    <div
-      class="before:content-[attr(data-before)] before:mr-1 lg:before:content-none"
-      data-before="Tested Url:"
-    >
-      {{ item.testedUrl }}
-    </div>
-    <div
-      class="before:content-[attr(data-before)] before:mr-1 lg:before:content-none"
-      data-before="Tags:"
+      v-for="(value, key) in topLabels"
+      :key="key"
+      class="
+        before:font-bold
+        before:content-[attr(data-before)]
+        before:mr-1
+        lg:before:content-none
+        break-words
+      "
+      :data-before="`${value}:`"
     >
       <span
-        v-for="tag in item.tags"
+        v-if="Array.isArray(item[key])"
+        v-for="(i, index) in item[key]"
+        :key="`tag-${item[key]}- ${index}`"
         class="border border-primary-200 px-1 inline-block mr-1 mb-1"
       >
-        {{ tag }}
+        {{ i }}
       </span>
+      <template v-else>
+        {{ item[key] }}
+      </template>
     </div>
     <div
       class="before:content-[attr(data-before)] before:mr-1 lg:before:content-none"
-      data-before="Impact:"
+      data-before="Status:"
     >
-      {{ item.impact }}
-    </div>
-    <!--
-        TODO: status shouldn't come from item axe API,
-        should be select and default value should be "To Do" while we take results from API
-        values should be predefined
-        other then "To Do" while importing from csv
-    -->
-    <div
-      class="before:content-[attr(data-before)] before:mr-1 lg:before:content-none"
-      data-before="Impact:"
-    >
-      {{ item.status }}
+      <BaseSelect
+        label="Status"
+        :id="`status-${item.uid}`"
+        :name="`status-${item.uid}`"
+        :options="statusOptions"
+        v-model="item.status"
+      />
     </div>
   </div>
   <div

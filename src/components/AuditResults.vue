@@ -2,15 +2,16 @@
 import { computed } from 'vue'
 import { getAxeResults } from '../composables/use-test-api'
 import { useAxeResults } from '../stores/results'
-import { AxeIssue } from '../types/axe'
 
-import Button from './Button.vue';
+import AppButton from './AppButton.vue';
+import AppFilters from './AppFilters.vue'
 import IssuesList from './IssuesList.vue'
 
 const store = useAxeResults()
 const violations = computed(() => {
   return store.getViolations
 })
+const title = computed(() => store.results.title)
 </script>
 <template>
   <div
@@ -22,20 +23,25 @@ const violations = computed(() => {
     "
   >
     <div class="text-center">
-      <Button
+      <AppButton
         label="Get results"
         @click="getAxeResults"
         class="w-1/3"
       />
     </div>
+    <h2 class="text-center my-6">
+      A11y issues
+      <span v-if="title"> - {{ title }}</span>
+    </h2>
+    <AppFilters v-if="(violations && violations.length) || store.activeFilters.length" />
     <IssuesList
       v-if="violations && violations.length"
       :issues="violations"
-     />
-     <div v-else>
-      <h2 class="text-center my-6">
+    />
+    <div v-else>
+      <h3 class="text-center my-6">
         No issues found
-      </h2>
+      </h3>
     </div>
   </div>
 </template>

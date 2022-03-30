@@ -4,11 +4,10 @@ import { reactive, computed } from '@vue/reactivity';
 
 // components imports
 import BaseInput from './BaseInput.vue';
-import Button from './Button.vue';
+import AppButton from './AppButton.vue';
 import Collapsible from './Collapsible.vue';
 import { postAxeRequest } from '../composables/use-test-api'
 
-// const emit = defineEmits(['submit'])
 // data
 const form = reactive({
   pages: [
@@ -86,7 +85,7 @@ function sendForm() {
               v-model="page.url"
               class="flex-grow"
             />
-            <Button
+            <AppButton
               v-if="index !== 0"
               label="Remove page"
               variant="secondary"
@@ -104,7 +103,7 @@ function sendForm() {
             class="md:w-1/2 self-end"
           />
         </div>
-        <Button
+        <AppButton
           label="Add another page"
           class="w-full md:w-auto"
           @click="addPage"
@@ -201,7 +200,7 @@ function sendForm() {
           />
         </div>
       </Collapsible>
-      <Button
+      <AppButton
         label="Send"
         type="submit"
         :disabled="disabled"

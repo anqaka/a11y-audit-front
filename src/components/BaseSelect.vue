@@ -5,16 +5,14 @@
     id: string
     label: string
     name: string
+    options: string[]
     required?: boolean
-    type?: string
     modelValue?: string | number
-    placeholder?: string
     note?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     modelValue: '',
     required: false,
-    type: 'text'
   })
   const emit = defineEmits(['update:modelValue'])
   const inputValue = useModelWrapper(props, emit)
@@ -31,13 +29,12 @@
     >
       {{ label }}
     </label>
-    <input
-      :type="type"
+    <select
       :name="name"
       :id="id"
       v-model="inputValue"
       class="
-        block w-full mt-1
+        block w-full max-w-full mt-1
         h-12
         border border-gray-300
         sm:text-sm
@@ -46,7 +43,17 @@
         focus:ring-indigo-500
         focus:border-indigo-500
       "
-    />
+    >
+      <option value="">
+        Choose an option
+      </option>
+      <option
+        v-for="option in options"
+        :value="option"
+      >
+        {{ option }}
+      </option>
+    </select>
     <p
       v-if="note"
       class="mt-1"

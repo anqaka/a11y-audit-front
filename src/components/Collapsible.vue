@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from '@vue/reactivity';
-import Button from './Button.vue';
 
 const props = defineProps<{
   title: string
