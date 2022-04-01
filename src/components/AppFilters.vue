@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, onMounted } from 'vue';
+import { reactive, onMounted, computed } from 'vue';
 import { useAxeResults } from '../stores/results'
 import useStatusOptions from '../composables/use-status-options'
 import BaseSelect from './BaseSelect.vue';
@@ -12,6 +12,7 @@ type activeFilter = {
 }
 
 const store = useAxeResults()
+const filteredIssues = computed(() => store.getIssuesNumberFiltered)
 const filters = reactive(
   [
     {
@@ -84,6 +85,7 @@ onMounted(() => {
   <Collapsible
     title="Filters"
   >
+    <div>Filtered Issues found: <span class="font-bold">{{ filteredIssues }}</span></div>
     <div
       class="
         grid grid-cols-1

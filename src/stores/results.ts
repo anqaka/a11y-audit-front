@@ -24,7 +24,30 @@ export const useAxeResults = defineStore('results', {
     getGroupedByIds(): AxeIssue[] {
       return this.getViolations ? groupBy(this.getViolations, 'id') : []
     },
-
+    getGroupedByIdsFoo: (state): any[] => {
+      const key = 'id'
+      const summaryArr = state.results.violations.reduce((result: any, currentValue: any) => {
+        let bar = result.find(obj => obj['issue'] === currentValue[key])
+        if (bar) {
+          bar.count++
+        } else {
+          result.push({
+            issue: currentValue[key],
+            impact: currentValue['impact'],
+            count: 1
+          })
+        }
+        return result
+      }, [])
+      return summaryArr
+    },
+    getIssuesNumberAll: (state): number => {
+      return state.results.violations.length
+    },
+    getIssuesNumberFiltered(): number {
+      const foo = this.getViolations
+      return foo.length
+    },
   },
   actions: {
     setResult (payload: any) {
@@ -32,35 +55,22 @@ export const useAxeResults = defineStore('results', {
       const items = foo.violations.map(item => {
         for (const key in item) {
           const itemValue = item[key]
-          // console.log(key, itemValue, Array.isArray(itemValue))
           if (Array.isArray(itemValue) && !itemValue.length) {
             delete item[key]
           } else if (Array.isArray(itemValue) && typeof itemValue[0] === 'object') {
-            // console.log('array with objects', itemValue)
             itemValue.forEach(ii => {
               for (const keyNest in ii) {
-                // console.log(keyNest, ii[keyNest])
                 if (keyNest === 'message') {
                   item.messages ? item.messages = [...item.messages, ii[keyNest]] : item.messages = [ii[keyNest]]
                 }
               }
             })
             delete item[key]
-            // for (const keyNest in itemValue) {
-            //   console.log(keyNest, itemValue[keyNest])
-            // }
           }
         }
-        // console.log('item', typeof item);
-        // Object.entries(item).forEach(i => {
-        //   // if ()
-        //   console.log(i, Array.isArray(i), i.length);
-
-        // })
         return item
       })
-      // console.log(items)
       this.results = { title: payload.title, violations: items }
-    },
+    }
   }
 })

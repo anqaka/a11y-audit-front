@@ -35,8 +35,14 @@ function exportCsvFoo() {
       if (item.html) {
         item.html = item.html
           .replace(/\"/g, '\'')
-          .replace(/\s+$||\t|\n|#|\\t|\\n/g, '')
+          .replace(/\s+$|\t|\n|#|\\t|\\n/g, '')
       }
+      if (item.selector) {
+        item.selector = item.selector
+          .replace(/\"/g, '\'')
+          .replace(/\s+$|\t|\n|#|\\t|\\n/g, '')
+      }
+      console.log(item.html)
       return item
     })
     const csv = Papa.unparse(JSON.stringify(csvFinal));
