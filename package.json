@@ -1,5 +1,5 @@
 {
-  "name": "audit-front",
+  "name": "a11y-audit-front",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --port=3001",
