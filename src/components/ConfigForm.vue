@@ -1,13 +1,14 @@
 <script setup lang="ts">
 // global imports
-import { reactive, computed } from '@vue/reactivity';
+import { ref, reactive, computed } from '@vue/reactivity';
 
 // components imports
 import BaseInput from './BaseInput.vue';
 import AppButton from './AppButton.vue';
 import Collapsible from './Collapsible.vue';
-import { postAxeRequest } from '../composables/use-test-api'
+import { postAxeRequest, listenForAxeStatus, getAxeResults } from '../composables/use-test-api'
 
+let isTestProcessing = ref(false)
 // data
 const form = reactive({
   pages: [
@@ -32,7 +33,7 @@ const form = reactive({
   }
 })
 const disabled = computed(() => {
-  return (!form.pages[0].url)
+  return (!form.pages[0].url) || isTestProcessing.value
 })
 
 // methods
@@ -42,10 +43,11 @@ function addPage() {
 function removePage() {
   form.pages.pop()
 }
-function sendForm() {
+async function sendForm() {
   console.log('sending form...')
   const formData = form
   const data = {
+    _id: crypto ? crypto.randomUUID() : new Date().getTime().toString(),
     ...formData,
     basicAuth:
       formData.basicAuth.username && formData.basicAuth.password
@@ -59,8 +61,21 @@ function sendForm() {
   }
   // emit('submit', data)
   postAxeRequest(data)
+
+  try {
+    isTestProcessing.value = true
+    await listenForAxeStatus(data)
+    getAxeResults()
+  }
+  catch (err) {
+    console.warn(err)
+  }
+  finally {
+    isTestProcessing.value = false
+  }
 }
 </script>
+
 <template>
   <section>
     <h2>Audit configuration</h2>
