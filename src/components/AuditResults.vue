@@ -27,13 +27,6 @@ const summary = computed(() => {
       py-12
     "
   >
-    <div class="text-center">
-      <AppButton
-        label="Get results"
-        @click="getAxeResults"
-        class="w-1/3"
-      />
-    </div>
     <h2 class="text-center my-6">
       A11y issues
       <span v-if="title"> - {{ title }}</span>
